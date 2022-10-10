@@ -8,7 +8,7 @@ public class SomeBot extends TelegramLongPollingBot {
     private final String botToken = System.getenv("BOT_TOKEN");
     @Override
     public String getBotToken(){
-        return botToken ;
+        return botToken;
     }
 
     @Override
