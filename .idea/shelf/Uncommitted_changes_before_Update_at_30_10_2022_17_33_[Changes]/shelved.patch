@@ -1,0 +1,225 @@
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+--- /dev/null	(date 1665407905815)
++++ b/.gitignore	(date 1665407905815)
+@@ -0,0 +1,2 @@
++# Project exclude paths
++/target/
+\ No newline at end of file
+Index: src/main/java/org/example/ConsoleBot.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/ConsoleBot.java b/src/main/java/org/example/ConsoleBot.java
+new file mode 100644
+--- /dev/null	(date 1667133071015)
++++ b/src/main/java/org/example/ConsoleBot.java	(date 1667133071015)
+@@ -0,0 +1,16 @@
++package org.example;
++import java.util.Scanner;
++
++public class ConsoleBot {
++    public void botMain(){
++        Scanner in=new Scanner(System.in);
++        while(true){
++            String nmsg=in.nextLine();
++            printmsg(nmsg);
++        }
++    }
++    public void printmsg(String text){
++        System.out.println(text);
++    }
++
++}
+Index: src/main/java/org/example/SomeBot.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example;\r\nimport org.telegram.telegrambots.bots.TelegramLongPollingBot;\r\nimport org.telegram.telegrambots.meta.api.methods.send.SendMessage;\r\nimport org.telegram.telegrambots.meta.api.objects.Update;\r\nimport org.telegram.telegrambots.meta.exceptions.TelegramApiException;\r\n\r\npublic class SomeBot extends TelegramLongPollingBot {\r\n    @Override\r\n    public String getBotToken(){\r\n        return \"\";\r\n    }\r\n\r\n    @Override\r\n    public void onUpdateReceived(Update update) {\r\n        var msg=update.getMessage();\r\n        var user = msg.getFrom();\r\n        var text = msg.getText();\r\n        sendMsg(user.getId(),text);\r\n    }\r\n\r\n    @Override\r\n    public String getBotUsername() {\r\n        return \"kmnbvcsxawersctvybunbot\";\r\n    }\r\n\r\n    public void sendMsg(Long accptr, String text){\r\n        SendMessage msg = SendMessage.builder().chatId(accptr.toString()).text(text).build();\r\n        try {\r\n            execute(msg);\r\n        } catch(TelegramApiException err){\r\n            throw new RuntimeException(err);\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/SomeBot.java b/src/main/java/org/example/SomeBot.java
+--- a/src/main/java/org/example/SomeBot.java	(revision b1fb1891f470e10b439ecb3d0da61b5025c34659)
++++ b/src/main/java/org/example/SomeBot.java	(date 1665408549256)
+@@ -5,9 +5,10 @@
+ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+ 
+ public class SomeBot extends TelegramLongPollingBot {
++    private String botToken = System.getenv("BOT_TOKEN");
+     @Override
+     public String getBotToken(){
+-        return "";
++        return botToken ;
+     }
+ 
+     @Override
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1665407905655)
++++ b/.idea/vcs.xml	(date 1665407905655)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: src/main/java/org/example/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example;\r\n\r\nimport org.telegram.telegrambots.meta.TelegramBotsApi;\r\nimport org.telegram.telegrambots.meta.exceptions.TelegramApiException;\r\nimport org.telegram.telegrambots.updatesreceivers.DefaultBotSession;\r\n\r\npublic class Main {\r\n    public static void main(String[] args) throws TelegramApiException {\r\n        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);\r\n        botsApi.registerBot(new SomeBot());\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/Main.java b/src/main/java/org/example/Main.java
+--- a/src/main/java/org/example/Main.java	(revision b1fb1891f470e10b439ecb3d0da61b5025c34659)
++++ b/src/main/java/org/example/Main.java	(date 1667133110037)
+@@ -6,7 +6,15 @@
+ 
+ public class Main {
+     public static void main(String[] args) throws TelegramApiException {
+-        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+-        botsApi.registerBot(new SomeBot());
++        int workMode=2;
++        switch(workMode){
++            case 1:
++                TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
++                botsApi.registerBot(new SomeBot());
++            case 2:
++                ConsoleBot bot=new ConsoleBot();
++                bot.botMain();
++        }
++
+     }
+ }
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1665315288176)
++++ b/.idea/misc.xml	(date 1665315288176)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="temurin-17" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1667132348604)
++++ b/.idea/compiler.xml	(date 1667132348604)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Maven default annotation processors profile" enabled="true">
++        <sourceOutputDir name="target/generated-sources/annotations" />
++        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
++        <outputRelativeToContentRoot value="true" />
++        <module name="untitled" />
++      </profile>
++    </annotationProcessing>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1665409631714)
++++ b/.idea/.gitignore	(date 1665409631714)
+@@ -0,0 +1,9 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++/compiler.xml
++/encodings.xml
++/jarRepositories.xml
++/misc.xml
++/vcs.xml
++/.gitignore
+\ No newline at end of file
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1665315297011)
++++ b/.idea/jarRepositories.xml	(date 1665315297011)
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1665315297000)
++++ b/.idea/encodings.xml	(date 1665315297000)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
