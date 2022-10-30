@@ -11,13 +11,13 @@ public class SomeBot extends TelegramLongPollingBot {
     public String getBotToken(){
         return botToken;
     }
-    private Logic Bot=new Logic();
+    private Logic bot=new Logic();
     @Override
     public void onUpdateReceived(Update update) {
         var msg=update.getMessage();
         var usid = msg.getFrom().getId();
         var text = msg.getText();
-        sendMsg(usid,Bot.parseMessage(text));
+        sendMsg(usid,bot.parseMessage(text));
     }
     @Override
     public String getBotUsername() {
