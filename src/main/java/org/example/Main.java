@@ -6,7 +6,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     public static void main(String[] args) throws TelegramApiException {
-        int workMode=2;
+        int workMode=1;
         switch(workMode){
             case 1:
                 TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);

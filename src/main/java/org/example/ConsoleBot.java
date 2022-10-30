@@ -3,14 +3,12 @@ package org.example;
 import java.util.Scanner;
 
 public class ConsoleBot {
+    Logic Bot=new Logic();
     public void botStart(){
         Scanner in=new Scanner(System.in);
         while(true){
             String msg=in.nextLine();
-            cOut(msg);
+            System.out.println(Bot.parseMessage(msg));
         }
-    }
-    public void cOut(String text){
-        System.out.println(text);
     }
 }
