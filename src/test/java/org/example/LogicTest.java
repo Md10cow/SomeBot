@@ -1,10 +1,10 @@
 package org.example;
-
+import static java.lang.Double.NaN;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.Double.NaN;
 import static org.junit.jupiter.api.Assertions.*;
-public class SomeBotTest {
+
+public class LogicTest {
     Logic bot = new Logic();
     @Test
     public void testCopy() {
