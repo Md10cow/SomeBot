@@ -17,7 +17,9 @@ public class SomeBot extends TelegramLongPollingBot {
         var msg=update.getMessage();
         var usid = msg.getFrom().getId();
         var text = msg.getText();
-        sendMsg(usid,bot.parseMessage(text));
+        var nmsg=bot.parseMessage(text);
+        if(!nmsg.equals(""))
+            sendMsg(usid,nmsg);
     }
     @Override
     public String getBotUsername() {
