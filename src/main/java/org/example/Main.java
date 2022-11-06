@@ -4,6 +4,11 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/**
+ * основа
+ * создано 06.11.2022
+ * переключатель режима между телеграмом и консолью
+ */
 public class Main {
     public static void main(String[] args) throws TelegramApiException {
         int workMode=1;

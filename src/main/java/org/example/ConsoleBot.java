@@ -1,7 +1,8 @@
 package org.example;
-
 import java.util.Scanner;
-
+/**
+ * класс, отвечающий за работу в консоли
+ */
 public class ConsoleBot {
     Logic bot=new Logic();
     public void botStart(){
