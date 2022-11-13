@@ -84,7 +84,7 @@ public class Logic {
         /** запрос данных */
         else if(msg.equals("/vklad")){
             wmode=2;
-            answer = "Принято, введите через пробел сумму вклада. \n/return - в главное меню";
+            answer = "Принято, введите сумму вклада. \n/return - в главное меню";
             rmode=1;
         }
         else if(msg.equals("/kredit")){
