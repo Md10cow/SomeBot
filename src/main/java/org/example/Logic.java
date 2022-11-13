@@ -135,7 +135,6 @@ public class Logic {
                         case 2:
                             double msum = arg1*arg2*arg3/100;
                             rmode = 1;
-                            answer = Double.toString(msum);
                             answer = "За " + arg3 + " лет получите " + Double.toString(msum + arg1) + " рублей из которых " +
                                     Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором вкладов. \n" +
