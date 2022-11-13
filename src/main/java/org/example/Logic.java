@@ -84,7 +84,7 @@ public class Logic {
         /** запрос данных */
         else if(msg.equals("/vklad")){
             wmode=2;
-            answer = "Принято, введите через пробел сумму вклада. \n/return - в главное меню";
+            answer = "Принято, введите сумму вклада. \n/return - в главное меню";
             rmode=1;
         }
         else if(msg.equals("/kredit")){
@@ -135,7 +135,6 @@ public class Logic {
                         case 2:
                             double msum = arg1*arg2*arg3/100;
                             rmode = 1;
-                            answer = Double.toString(msum);
                             answer = "За " + arg3 + " лет получите " + Double.toString(msum + arg1) + " рублей из которых " +
                                     Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором вкладов. \n" +
