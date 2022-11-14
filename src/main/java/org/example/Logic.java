@@ -28,7 +28,7 @@ public class Logic {
                     frac++;
                 }
             } else
-                return NaN;
+                return 0x7ff8000000000000L;
         }
         return arg;
     }
@@ -57,7 +57,7 @@ public class Logic {
             rmode = 0;
             wmode = 0;
             answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
-                     "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
+                    "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
         }
         /** для будущих задач */
         else if(msg.equals("/calc")) {
@@ -96,7 +96,7 @@ public class Logic {
             switch(rmode){
                 case 1:
                     arg1=parseArg(msg);
-                    if (arg1==NaN)
+                    if (arg1==0x7ff8000000000000L)
                         return "неизвестные символы";
                     switch(wmode) {
                         case 2:
@@ -112,8 +112,8 @@ public class Logic {
                     break;
                 case 2:
                     arg2=parseArg(msg);
-                    if (arg2==NaN)
-                            return "неизвестные символы";
+                    if (arg2==0x7ff8000000000000L)
+                        return "неизвестные символы";
                     switch(wmode) {
                         case 2:
                             answer = "Введите количество лет, которые будет храниться вклад.";
@@ -129,7 +129,7 @@ public class Logic {
                 /** подсчёты и вывод */
                 case 3:
                     arg3=parseArg(msg);
-                    if (arg3==NaN)
+                    if (arg3==0x7ff8000000000000L)
                         return "неизвестные символы";
                     switch(wmode) {
                         case 2:
