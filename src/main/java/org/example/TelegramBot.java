@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 /**
  * класс, отвечающий за работу бота в телеграме
  */
-public class SomeBot extends TelegramLongPollingBot {
+public class TelegramBot extends TelegramLongPollingBot {
     /** токен и имя бота */
     private String botToken = System.getenv("BOT_TOKEN");
     private String botUserName="kmnbvcsxawersctvybunbot";
