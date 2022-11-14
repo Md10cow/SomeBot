@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LogicTest {
     Logic bot = new Logic();
+    /** тесты для проверки ввода чисел */
     @Test
     public void testCopy() {
         assertEquals(8.4, bot.parseArg("8.4"));
@@ -16,6 +17,7 @@ public class LogicTest {
 
     @Test
     public void parseMessage() {
+        /** тесты для start, calc и бессмысленного сообщения */
         int wmode = 0;
         int rmode = 0;
         assertEquals("Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
@@ -24,6 +26,7 @@ public class LogicTest {
         assertEquals("", bot.parseMessage("wacagesag"));
 
 
+        /** тесты для help */
         assertEquals("Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
                 "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)", bot.parseMessage("/help"));
         wmode = 1;
@@ -34,6 +37,7 @@ public class LogicTest {
         assertEquals("Подсчитывает итоговую сумму по кредиту (вместе с выплатами). Введите то, что просит бот.\n/return - в главное меню", bot.parseMessage("/help"));
 
 
+        /** тесты для return */
         wmode = 0;
         assertEquals("", bot.parseMessage("/return"));
         wmode = 1;
@@ -44,6 +48,7 @@ public class LogicTest {
         assertEquals("/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню", bot.parseMessage("/return"));
 
 
+        /** тесты для команды vklad и проверки расчётов по вкладу */
         assertEquals("Принято, введите сумму вклада. \n/return - в главное меню", bot.parseMessage("/vklad"));
 
         assertEquals("неизвестные символы", bot.parseMessage(String.valueOf(NaN)));
@@ -60,6 +65,7 @@ public class LogicTest {
                 "Введите /return, чтобы вернуться в главное меню.", bot.parseMessage(String.valueOf(2)));
 
 
+        /** тесты для команды kredit и проверки расчётов по кредиту */
         assertEquals("Принято, введите сумму кредита. \n/return - в главное меню", bot.parseMessage("/kredit"));
 
         assertEquals("неизвестные символы", bot.parseMessage(String.valueOf(NaN)));
