@@ -1,20 +1,14 @@
 package org.example;
 
-import static java.lang.Double.NaN;
+import java.util.HashMap;
+import java.util.Map;
+
 /** основа программы, отвечает за логику бота */
-public class Logic {
-
-    /** режимы для опознавания места, где находится пользователь */
-    int wmode=0;
-    int rmode=0;
-
-    /** аргументы для рассчета вклада/кредита */
-    double arg1=0;
-    double arg2=0;
-    double arg3=0;
-
+public class Logic{
+    public static double nan=0x7ff8000000000000L;
+    private Map<Long,Uvars> uList=new HashMap<>();
     /** конвертация текста в дробь */
-    public double parseArg(String msg) {
+    private double parseArg(String msg) {
         int frac = 0;
         double arg = 0;
         for (int i = 0; i < msg.length(); i++) {
@@ -28,17 +22,20 @@ public class Logic {
                     frac++;
                 }
             } else
-                return 0x7ff8000000000000L;
+                return nan;
         }
         return arg;
     }
 
     /** все вводы и выводы */
-    public String parseMessage(String msg) {
+    public String parseMessage(String msg, Long usid) {
         String answer;
+        Uvars uvars=new Uvars();
+        uList.putIfAbsent(usid,uvars);
+        uvars=uList.get(usid);
         /** вспомогательная команда для пользователя */
         if(msg.equals("/help"))
-            switch(wmode) {
+            switch(uvars.wmode) {
                 case 1:
                     answer = "Калькулятор вкладов и кредитов\n/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
                     break;
@@ -54,51 +51,48 @@ public class Logic {
             }
         /** старт */
         else if(msg.equals("/start")) {
-            rmode = 0;
-            wmode = 0;
+            uvars.rmode = 0;
+            uvars.wmode = 0;
             answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
-                    "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
+                     "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
         }
         /** для будущих задач */
         else if(msg.equals("/calc")) {
-            wmode = 1;
+            uvars.wmode = 1;
             answer = "/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
         }
         /** команда для возвращения */
         else if(msg.equals("/return")){
-            switch(wmode){
+            switch(uvars.wmode){
                 case 1:
-                    wmode=0;
-                    answer="";
-                    break;
                 case 2:
                 case 3:
-                    wmode=1;
-                    answer="/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
+                    uvars.wmode=0;
+                    answer="Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
                     break;
                 default:
                     answer="";
             }
-            rmode=0;
+            uvars.rmode=0;
         }
         /** запрос данных */
         else if(msg.equals("/vklad")){
-            wmode=2;
+            uvars.wmode=2;
             answer = "Принято, введите сумму вклада. \n/return - в главное меню";
-            rmode=1;
+            uvars.rmode=1;
         }
         else if(msg.equals("/kredit")){
-            wmode=3;
+            uvars.wmode=3;
             answer = "Принято, введите сумму кредита. \n/return - в главное меню";
-            rmode=1;
+            uvars.rmode=1;
         }
         else{
-            switch(rmode){
+            switch(uvars.rmode){
                 case 1:
-                    arg1=parseArg(msg);
-                    if (arg1==0x7ff8000000000000L)
+                    uvars.arg1=parseArg(msg);
+                    if (uvars.arg1==nan)
                         return "неизвестные символы";
-                    switch(wmode) {
+                    switch(uvars.wmode) {
                         case 2:
                             answer = "Введите годовую процентную ставку. "; //вклад
                             break;
@@ -108,13 +102,13 @@ public class Logic {
                         default:
                             answer = "";
                     }
-                    rmode=2;
+                    uvars.rmode=2;
                     break;
                 case 2:
-                    arg2=parseArg(msg);
-                    if (arg2==0x7ff8000000000000L)
-                        return "неизвестные символы";
-                    switch(wmode) {
+                    uvars.arg2=parseArg(msg);
+                    if (uvars.arg2==nan)
+                            return "неизвестные символы";
+                    switch(uvars.wmode) {
                         case 2:
                             answer = "Введите количество лет, которые будет храниться вклад.";
                             break;
@@ -124,30 +118,30 @@ public class Logic {
                         default:
                             answer = "";
                     }
-                    rmode=3;
+                    uvars.rmode=3;
                     break;
                 /** подсчёты и вывод */
                 case 3:
-                    arg3=parseArg(msg);
-                    if (arg3==0x7ff8000000000000L)
+                    uvars.arg3=parseArg(msg);
+                    if (uvars.arg3==nan)
                         return "неизвестные символы";
-                    switch(wmode) {
+                    switch(uvars.wmode) {
                         case 2:
-                            double msum = arg1*arg2*arg3/100;
-                            rmode = 1;
-                            answer = "За " + arg3 + " лет получите " + Double.toString(msum + arg1) + " рублей из которых " +
+                            double msum = uvars.arg1*uvars.arg2*uvars.arg3/100;
+                            uvars.rmode = 1;
+                            answer = "За " + uvars.arg3 + " лет получите " + Double.toString(msum + uvars.arg1) + " рублей из которых " +
                                     Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором вкладов. \n" +
                                     "Введите /kredit, чтобы начать работать с калькулятором кредитов. \n" +
                                     "Введите /return, чтобы вернуться в главное меню.";
                             break;
                         case 3:
-                            double mper = arg2 / 1200;
-                            double mtime = arg3 * 12;
-                            msum = arg1 * mper * (1 + 1 / (Math.pow(1 + mper, mtime) - 1));
-                            rmode = 1;
-                            answer = "За " + arg3 + " лет вы выплатите банку " + Double.toString(msum * mtime) + " рублей из которых " +
-                                    Double.toString(msum * mtime - arg1) + " являются переплатой. \n" +
+                            double mper = uvars.arg2 / 1200;
+                            double mtime = uvars.arg3 * 12;
+                            msum = uvars.arg1 * mper * (1 + 1 / (Math.pow(1 + mper, mtime) - 1));
+                            uvars.rmode = 1;
+                            answer = "За " + uvars.arg3 + " лет вы выплатите банку " + Double.toString(msum * mtime) + " рублей из которых " +
+                                    Double.toString(msum * mtime - uvars.arg1) + " являются переплатой. \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором кредитов. \n" +
                                     "Введите /vklad, чтобы начать работать с калькулятором вкладов. \n" +
                                     "Введите /return, чтобы вернуться в главное меню.";

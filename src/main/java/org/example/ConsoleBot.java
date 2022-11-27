@@ -9,7 +9,7 @@ public class ConsoleBot {
         Scanner in=new Scanner(System.in);
         while(true){
             String msg=in.nextLine();
-            var nmsg=bot.parseMessage(msg);
+            var nmsg=bot.parseMessage(msg, 0L);
             if(!nmsg.equals(""))
                 System.out.println(nmsg);
         }
