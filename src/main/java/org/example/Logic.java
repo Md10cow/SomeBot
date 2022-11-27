@@ -7,7 +7,12 @@ import java.util.Map;
 public class Logic{
     public static double nan=0x7ff8000000000000L;
     private Map<Long,Uvars> uList=new HashMap<>();
-    /** конвертация текста в дробь */
+
+    /**
+     * Конвертор string в double
+     *
+     * @param msg сообщение пользователя
+     */
     private double parseArg(String msg) {
         int frac = 0;
         double arg = 0;
@@ -27,13 +32,18 @@ public class Logic{
         return arg;
     }
 
-    /** все вводы и выводы */
+    /**
+     * Калькулятор вкладов и кредитов
+     *
+     * @param msg сообщение пользователя
+     * @param usid id пользователя
+     */
     public String parseMessage(String msg, Long usid) {
         String answer;
         Uvars uvars=new Uvars();
         uList.putIfAbsent(usid,uvars);
         uvars=uList.get(usid);
-        /** вспомогательная команда для пользователя */
+        /* вспомогательная команда для пользователя */
         if(msg.equals("/help"))
             switch(uvars.wmode) {
                 case 1:
@@ -49,19 +59,19 @@ public class Logic{
                     answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
                             "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
             }
-        /** старт */
+        /* старт */
         else if(msg.equals("/start")) {
             uvars.rmode = 0;
             uvars.wmode = 0;
             answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
                      "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
         }
-        /** для будущих задач */
+        /* для будущих задач */
         else if(msg.equals("/calc")) {
             uvars.wmode = 1;
             answer = "/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
         }
-        /** команда для возвращения */
+        /* команда для возвращения */
         else if(msg.equals("/return")){
             switch(uvars.wmode){
                 case 1:
@@ -75,7 +85,7 @@ public class Logic{
             }
             uvars.rmode=0;
         }
-        /** запрос данных */
+        /* запрос данных */
         else if(msg.equals("/vklad")){
             uvars.wmode=2;
             answer = "Принято, введите сумму вклада. \n/return - в главное меню";
@@ -120,7 +130,7 @@ public class Logic{
                     }
                     uvars.rmode=3;
                     break;
-                /** подсчёты и вывод */
+                /* подсчёты и вывод */
                 case 3:
                     uvars.arg3=parseArg(msg);
                     if (uvars.arg3==nan)

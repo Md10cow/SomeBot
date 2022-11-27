@@ -1,5 +1,7 @@
 package org.example;
-
+/**
+ * набор переменных, привязанных к пользователю
+ */
 public class Uvars {
     public int rmode=0;
     public int wmode=0;
