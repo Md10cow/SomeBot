@@ -1,12 +1,18 @@
-%razd1
-?vopr1
-*otv11
-*otv12
-*otv13
-?vopr2
-*otv21
-%razd2
-?vopr3
-*otv31
-?vopr4
-*otv41
+%Документы
+?Документы для получения кредита/вклада
+*https://www.raiffeisen.ru/wiki/kakie-dokumenty-nuzhny-dlya-oformleniya-kredita/
+*https://www.banki.ru/wikibank/dokumentyi_dlya_oformleniya_potrebitelskogo_kredita/
+*https://www.sravni.ru/vklady/info/dokumenty-dlya-otkrytiya-vklada/
+?Документы для покупки дома с земельным участком
+*https://ibogatyr.ru/blog/oformlenie-doma-kakie-dokumenty-nuzhny/
+%Финансовые операции
+?Конвертация валюты
+*https://alfabank.ru/everyday/online/alfaclick/transfer/transfer-exchange/
+?Инвестиции
+*http://www.sberbank.ru/ru/person/investments/how_to_start_invest
+%Иное
+?Нотариусы Екатеринбурга
+*https://ekb-notarius.ru/ekaterinburg/rayon
+?Мошенничество
+*https://fincult.info/article/moshennichestvo-ot-imeni-bankov-gosudarstvennykh-uchrezhdeniy-ofitsialnykh-lits/
+*https://www.cbr.ru/information_security/pmp/
