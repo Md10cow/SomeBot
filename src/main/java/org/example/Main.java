@@ -11,14 +11,14 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  */
 public class Main {
     public static void main(String[] args) throws TelegramApiException {
-        int workMode=1;
+        int workMode=2;
         switch(workMode){
             case 1:
                 TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
                 botsApi.registerBot(new TelegramBot());
             case 2:
-                ConsoleBot bot=new ConsoleBot();
-                bot.botStart();
+                ConsoleBot cBot=new ConsoleBot();
+                cBot.botStart();
         }
     }
 }

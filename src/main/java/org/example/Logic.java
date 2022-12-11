@@ -1,19 +1,53 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/** основа программы, отвечает за логику бота */
+/* основа программы, отвечает за логику бота */
 public class Logic{
     public static double nan=0x7ff8000000000000L;
     private Map<Long,Uvars> uList=new HashMap<>();
-
+    private FileSysObj FSO;
+    private ArrayList<QARecord> QAArr=new ArrayList<>();
+    public boolean isBotInitialized=false;
+    public void initBot(){
+        FSO=new FileSysObj();
+        FSO.openFile("QADB.txt");
+        String line=FSO.readLine();
+        boolean LLiQflag=true;
+        QARecord qrrRec=null;
+        while(line!=null){
+            if(line.charAt(0)=='%') {
+                qrrRec=new QARecord();
+                qrrRec.sect=line.substring(1, line.length());
+                LLiQflag=true;
+                QAArr.add(qrrRec);
+            }
+            else if(line.charAt(0)=='?') {
+                LLiQflag=true;
+                qrrRec.qArr.add(line.substring(1, line.length()));
+            }
+            else if(line.charAt(0)=='*') {
+                if(LLiQflag) {
+                    qrrRec.aArr.add(line.substring(1, line.length()));
+                    LLiQflag=false;
+                }else{
+                    qrrRec.aArr.set(qrrRec.aArr.size()-1,qrrRec.aArr.get(qrrRec.aArr.size()-1)+"\n"+line.substring(1, line.length()));
+                }
+            }
+            line=FSO.readLine();
+        }
+        isBotInitialized=true;
+    }
     /**
      * Конвертор string в double
      *
      * @param msg сообщение пользователя
      */
     private double parseArg(String msg) {
+        if (msg==null)
+            return nan;
         int frac = 0;
         double arg = 0;
         for (int i = 0; i < msg.length(); i++) {
@@ -47,7 +81,7 @@ public class Logic{
         if(msg.equals("/help"))
             switch(uvars.wmode) {
                 case 1:
-                    answer = "Калькулятор вкладов и кредитов\n/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
+                    answer = ""; //вопрос
                     break;
                 case 2:
                     answer = "Подсчитывает итоговую сумму по вкладу (вместе с процентами). Введите то, что просит бот.\n/return - в главное меню";
@@ -66,10 +100,14 @@ public class Logic{
             answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
                      "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
         }
-        /* для будущих задач */
-        else if(msg.equals("/calc")) {
+        /*  */
+        else if(msg.equals("/vopros")) {
             uvars.wmode = 1;
-            answer = "/vklad - рассчет вкладов\n/kredit - рассчет кредитов\n/return - в главное меню";
+            uvars.rmode = 1;
+            answer="";//до списка разделов
+            for(int i=0;i<QAArr.size();i++)
+                answer+=Integer.toString(i+1)+":"+QAArr.get(i).sect+"\n";
+            answer+="";//после списка разделов
         }
         /* команда для возвращения */
         else if(msg.equals("/return")){
@@ -78,6 +116,7 @@ public class Logic{
                 case 2:
                 case 3:
                     uvars.wmode=0;
+                    uvars.rmode=0;
                     answer="Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
                     break;
                 default:
@@ -97,47 +136,76 @@ public class Logic{
             uvars.rmode=1;
         }
         else{
-            switch(uvars.rmode){
+            switch (uvars.rmode) {
                 case 1:
-                    uvars.arg1=parseArg(msg);
-                    if (uvars.arg1==nan)
+                    uvars.arg1 = parseArg(msg);
+                    if (uvars.arg1 == nan)
                         return "неизвестные символы";
-                    switch(uvars.wmode) {
+                    switch (uvars.wmode) {
+                        case 1:
+                            if ((int) uvars.arg1 > QAArr.size() || (int) uvars.arg1 <= 0) {
+                                answer = "";//вне диапазона
+                            } else {
+                                answer = "";//до списка вопросов
+                                for (int i = 0; i < QAArr.size(); i++)
+                                    answer += Integer.toString(i + 1) + ":" + QAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n";
+                                answer += "";//после списка вопросов
+                                uvars.rmode = 2;
+                            }
+                            break;
                         case 2:
                             answer = "Введите годовую процентную ставку. "; //вклад
+                            uvars.rmode = 2;
                             break;
                         case 3:
                             answer = "Введите годовую процентную ставку. "; //кредит
+                            uvars.rmode = 2;
                             break;
                         default:
                             answer = "";
                     }
-                    uvars.rmode=2;
                     break;
                 case 2:
-                    uvars.arg2=parseArg(msg);
-                    if (uvars.arg2==nan)
-                            return "неизвестные символы";
-                    switch(uvars.wmode) {
+                    uvars.arg2 = parseArg(msg);
+                    if (uvars.arg2 == nan)
+                        return "неизвестные символы";
+                    switch (uvars.wmode) {
+                        case 1:
+                            uvars.arg2 = Integer.parseInt(msg);
+                            if ((int) uvars.arg2 > QAArr.get((int) uvars.arg1 - 1).aArr.size() || (int) uvars.arg2 < 0) {
+                                answer = "";//вне диапазона
+                            } else if ((int) uvars.arg2 == 0) {
+                                answer = "";//до списка разделов
+                                for (int i = 0; i < QAArr.size(); i++)
+                                    answer += Integer.toString(i + 1) + ":" + QAArr.get(i).sect + "\n";
+                                answer += "";//после списка разделов
+                                uvars.rmode = 1;
+                            } else {
+                                answer = "";//до списка ответов
+                                answer += QAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1);
+                                answer += "";//после списка ответов
+                            }
+                            break;
                         case 2:
                             answer = "Введите количество лет, которые будет храниться вклад.";
+                            uvars.rmode = 3;
                             break;
                         case 3:
                             answer = "Введите количество лет, которые будет оплачиваться кредит.";
+                            uvars.rmode = 3;
                             break;
                         default:
                             answer = "";
                     }
-                    uvars.rmode=3;
                     break;
                 /* подсчёты и вывод */
                 case 3:
-                    uvars.arg3=parseArg(msg);
-                    if (uvars.arg3==nan)
+                    uvars.arg3 = parseArg(msg);
+                    if (uvars.arg3 == nan)
                         return "неизвестные символы";
-                    switch(uvars.wmode) {
+                    switch (uvars.wmode) {
                         case 2:
-                            double msum = uvars.arg1*uvars.arg2*uvars.arg3/100;
+                            double msum = uvars.arg1 * uvars.arg2 * uvars.arg3 / 100;
                             uvars.rmode = 1;
                             answer = "За " + uvars.arg3 + " лет получите " + Double.toString(msum + uvars.arg1) + " рублей из которых " +
                                     Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
@@ -157,11 +225,11 @@ public class Logic{
                                     "Введите /return, чтобы вернуться в главное меню.";
                             break;
                         default:
-                            answer="";
+                            answer = "";
                     }
                     break;
                 default:
-                    answer="";
+                    answer = "";
             }
         }
         return answer;
