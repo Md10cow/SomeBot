@@ -7,6 +7,7 @@ public class ConsoleBot {
     Logic bot=new Logic();
     public void botStart(){
         Scanner in=new Scanner(System.in);
+        bot.initBot();
         while(true){
             String msg=in.nextLine();
             var nmsg=bot.parseMessage(msg, 0L);

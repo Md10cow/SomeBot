@@ -17,8 +17,8 @@ public class Main {
                 TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
                 botsApi.registerBot(new TelegramBot());
             case 2:
-                ConsoleBot bot=new ConsoleBot();
-                bot.botStart();
+                ConsoleBot cBot=new ConsoleBot();
+                cBot.botStart();
         }
     }
 }
