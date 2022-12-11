@@ -1,16 +1,26 @@
 package org.example;
 
 import java.io.*;
-
+/**
+ * класс для чтения файлов
+ */
 public class FileSysObj {
     private File file;
     private FileReader fr = null;
     private BufferedReader reader = null;
+    /**
+     * открывает файл на чтение
+     *
+     * @param pathname имя файла
+     */
     public void openFile(String pathname){
         file = new File(pathname);
         fr = null;
         reader = null;
     }
+    /**
+     * читает одну строку
+     */
     public String readLine(){
         String line="";
         try{

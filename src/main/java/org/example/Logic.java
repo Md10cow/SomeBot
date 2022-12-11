@@ -9,9 +9,17 @@ public class Logic{
     public static double nan=0x7ff8000000000000L;
     private Map<Long,Uvars> uList=new HashMap<>();
     private FileSysObj FSO;
-    private ArrayList<QARecord> QAArr=new ArrayList<>();
+    private ArrayList<QARecord> QAArr=null;
     public boolean isBotInitialized=false;
+
+    /* основа программы, отвечает за логику бота */
+
+
+    /**
+     * Инициализирует бота
+     */
     public void initBot(){
+        QAArr=new ArrayList<>();
         FSO=new FileSysObj();
         FSO.openFile("QADB.txt");
         String line=FSO.readLine();
@@ -67,7 +75,7 @@ public class Logic{
     }
 
     /**
-     * Калькулятор вкладов и кредитов
+     * Калькулятор вкладов и кредитов, а также банковский помощник
      *
      * @param msg сообщение пользователя
      * @param usid id пользователя
@@ -81,33 +89,37 @@ public class Logic{
         if(msg.equals("/help"))
             switch(uvars.wmode) {
                 case 1:
-                    answer = ""; //вопрос
+                    answer = "Даёт ссылку на вопрос по выбранной теме. Введите цифру нужного вам раздела/темы."; //вопрос
                     break;
                 case 2:
-                    answer = "Подсчитывает итоговую сумму по вкладу (вместе с процентами). Введите то, что просит бот.\n/return - в главное меню";
+                    answer = "Подсчитывает итоговую сумму по вкладу (вместе с процентами)." +
+                            " Введите то, что просит бот.\n/return - в главное меню";
                     break;
                 case 3:
-                    answer = "Подсчитывает итоговую сумму по кредиту (вместе с выплатами). Введите то, что просит бот.\n/return - в главное меню";
+                    answer = "Подсчитывает итоговую сумму по кредиту (вместе с выплатами)." +
+                            " Введите то, что просит бот.\n/return - в главное меню";
                     break;
                 default:
-                    answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
-                            "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
+                    answer = "Здравствуйте, вам приветствует программа, подсчитывающая доходность вкладов, " +
+                            "сумму для выплаты кредита или же помогающая в некоторых юридических/финансовых вопросах по работе с банком. \n" +
+                            "Пожалуйста, выберите, что хотите сделать (напишите /vklad, /kredit или /vopros) ";
             }
         /* старт */
         else if(msg.equals("/start")) {
             uvars.rmode = 0;
             uvars.wmode = 0;
-            answer = "Здравствуйте, вас приветствует программа, подсчитывающая доходность вкладов или же сумму для выплаты кредита. \n" +
-                     "Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
+            answer = "Здравствуйте, вам приветствует программа, подсчитывающая доходность вкладов, " +
+                    "сумму для выплаты кредита или же помогающая в некоторых юридических/финансовых вопросах по работе с банком. \n" +
+                    "Пожалуйста, выберите, что хотите сделать (напишите /vklad, /kredit или /vopros) ";
         }
-        /*  */
+        /* команда для списка имеющихся разделов */
         else if(msg.equals("/vopros")) {
             uvars.wmode = 1;
             uvars.rmode = 1;
-            answer="";//до списка разделов
+            answer="На данный момент доступны разделы:\n"; //до списка разделов
             for(int i=0;i<QAArr.size();i++)
-                answer+=Integer.toString(i+1)+":"+QAArr.get(i).sect+"\n";
-            answer+="";//после списка разделов
+                answer+=Integer.toString(i+1)+")"+QAArr.get(i).sect+"\n"; //список разделов
+            answer+="Выберите цифру раздела по которому возник вопрос."; //после списка разделов
         }
         /* команда для возвращения */
         else if(msg.equals("/return")){
@@ -117,7 +129,7 @@ public class Logic{
                 case 3:
                     uvars.wmode=0;
                     uvars.rmode=0;
-                    answer="Пожалуйста, выберите, что вы хотите рассчитать (Напишите /vklad или /kredit)";
+                    answer="Пожалуйста, выберите, что вы хотите рассчитать или спросить (Напишите /vklad, /kredit или /vopros)";
                     break;
                 default:
                     answer="";
@@ -144,12 +156,15 @@ public class Logic{
                     switch (uvars.wmode) {
                         case 1:
                             if ((int) uvars.arg1 > QAArr.size() || (int) uvars.arg1 <= 0) {
-                                answer = "";//вне диапазона
+                                answer = "Такой цифры нет в данном меню." +
+                                        " Пожалуйста, напишите одну из доступных цифр.\n"; //текст если число вне диапазона
                             } else {
-                                answer = "";//до списка вопросов
-                                for (int i = 0; i < QAArr.size(); i++)
-                                    answer += Integer.toString(i + 1) + ":" + QAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n";
-                                answer += "";//после списка вопросов
+                                answer = "В этом разделе доступны следующие вопросы:\n"; //текст до списка вопросов
+                                for (int i = 0; i < QAArr.get((int)uvars.arg1 - 1).qArr.size(); i++)
+                                    answer += Integer.toString(i + 1) +
+                                            ")" + QAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n"; //список вопросов
+                                answer += "Выберите цифру темы, на которую хотите получить" +
+                                        " ответ или вернитесь обратно с помощью /return"; //текст после списка вопросов
                                 uvars.rmode = 2;
                             }
                             break;
@@ -173,17 +188,18 @@ public class Logic{
                         case 1:
                             uvars.arg2 = Integer.parseInt(msg);
                             if ((int) uvars.arg2 > QAArr.get((int) uvars.arg1 - 1).aArr.size() || (int) uvars.arg2 < 0) {
-                                answer = "";//вне диапазона
+                                answer = "Такой цифры нет в данном меню. Пожалуйста, напишите одну из доступных цифр.\n"; //число вне диапазона
                             } else if ((int) uvars.arg2 == 0) {
-                                answer = "";//до списка разделов
+                                answer = "На данный момент доступны разделы:\n"; //до списка разделов
                                 for (int i = 0; i < QAArr.size(); i++)
-                                    answer += Integer.toString(i + 1) + ":" + QAArr.get(i).sect + "\n";
-                                answer += "";//после списка разделов
+                                    answer += Integer.toString(i + 1) + ")" + QAArr.get(i).sect + "\n"; //список разделов
+                                answer += "Выберите цифру раздела по которому возник вопрос."; //после списка разделов
                                 uvars.rmode = 1;
                             } else {
-                                answer = "";//до списка ответов
-                                answer += QAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1);
-                                answer += "";//после списка ответов
+                                answer = "По данной теме есть следующие ссылки:\n"; //до списка ответов
+                                answer += QAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1) + "\n"; //список ответов
+                                answer += "Напишите 0, если хотите вернуться к выбору раздела или выберите один из" +
+                                        " вопросов текущего раздела."; //после списка ответов
                             }
                             break;
                         case 2:
@@ -207,8 +223,8 @@ public class Logic{
                         case 2:
                             double msum = uvars.arg1 * uvars.arg2 * uvars.arg3 / 100;
                             uvars.rmode = 1;
-                            answer = "За " + uvars.arg3 + " лет получите " + Double.toString(msum + uvars.arg1) + " рублей из которых " +
-                                    Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
+                            answer = "За " + uvars.arg3 + " лет получите " + Double.toString(msum + uvars.arg1) +
+                                    " рублей из которых " + Double.toString(msum) + " являются вашим доходом с вклада.  \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором вкладов. \n" +
                                     "Введите /kredit, чтобы начать работать с калькулятором кредитов. \n" +
                                     "Введите /return, чтобы вернуться в главное меню.";
@@ -218,8 +234,8 @@ public class Logic{
                             double mtime = uvars.arg3 * 12;
                             msum = uvars.arg1 * mper * (1 + 1 / (Math.pow(1 + mper, mtime) - 1));
                             uvars.rmode = 1;
-                            answer = "За " + uvars.arg3 + " лет вы выплатите банку " + Double.toString(msum * mtime) + " рублей из которых " +
-                                    Double.toString(msum * mtime - uvars.arg1) + " являются переплатой. \n" +
+                            answer = "За " + uvars.arg3 + " лет вы выплатите банку " + Double.toString(msum * mtime) +
+                                    " рублей из которых " + Double.toString(msum * mtime - uvars.arg1) + " являются переплатой. \n" +
                                     "Введитие сумму кредита, чтобы снова начать работать с калькулятором кредитов. \n" +
                                     "Введите /vklad, чтобы начать работать с калькулятором вкладов. \n" +
                                     "Введите /return, чтобы вернуться в главное меню.";
