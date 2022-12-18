@@ -11,17 +11,6 @@ public class Logic{
     private AuxLogic auxLogic=new AuxLogic();
     public boolean isBotInitialized=false;
 
-    /* основа программы, отвечает за логику бота */
-
-
-    /**
-     * Инициализирует бота
-     */
-    public void initBot(){
-        qAArr = auxLogic.parseFile();
-        isBotInitialized=true;
-    }
-
     /**
      * Калькулятор вкладов и кредитов, а также банковский помощник
      *
@@ -29,6 +18,10 @@ public class Logic{
      * @param usid id пользователя
      */
     public String parseMessage(String msg, Long usid) {
+        if (!isBotInitialized) {
+            qAArr = auxLogic.parseFile();
+            isBotInitialized=true;
+        }
         String answer;
         Uvars uvars=new Uvars();
         uList.putIfAbsent(usid,uvars);

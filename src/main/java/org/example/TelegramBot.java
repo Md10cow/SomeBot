@@ -18,8 +18,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private Logic bot=new Logic();
     @Override
     public void onUpdateReceived(Update update) {
-        if(!bot.isBotInitialized)
-            bot.initBot();
         var msg=update.getMessage();
         var usid = msg.getFrom().getId();
         var text = msg.getText();

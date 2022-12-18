@@ -61,7 +61,6 @@ public class LogicTest {
     /** тесты для вопросов */
     @Test
     public void testVopros(){
-        bot.initBot();
         assertEquals("На данный момент доступны разделы:\n1)Документы\n2)Финансовые операции\n3)Иное\n" +
                 "Выберите цифру раздела по которому возник вопрос.", bot.parseMessage("/vopros", 0L));
 
