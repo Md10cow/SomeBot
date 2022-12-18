@@ -1,10 +1,12 @@
 package org.example;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+
 /**
  * класс для чтения файлов
  */
-public class FileSysObj {
+public class FileReaderClass {
     private File file;
     private FileReader fr = null;
     private BufferedReader reader = null;
@@ -25,15 +27,21 @@ public class FileSysObj {
         String line="";
         try{
             if(fr==null)
-                fr=new FileReader(file);
+                fr=new FileReader(file, StandardCharsets.UTF_8);
             if(reader==null)
                 reader=new BufferedReader(fr);
             line = reader.readLine();
-        } catch (FileNotFoundException err){
-            err.printStackTrace();
         } catch (IOException err) {
             err.printStackTrace();
         }
         return line;
+    }
+    public void close(){
+        try{
+            reader.close();
+            fr.close();
+        }catch(IOException err){
+            err.printStackTrace();
+        }
     }
 }

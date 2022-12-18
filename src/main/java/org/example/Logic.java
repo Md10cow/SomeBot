@@ -6,10 +6,9 @@ import java.util.Map;
 
 /* основа программы, отвечает за логику бота */
 public class Logic{
-    public static double nan=0x7ff8000000000000L;
     private Map<Long,Uvars> uList=new HashMap<>();
-    private FileSysObj FSO;
-    private ArrayList<QARecord> QAArr=null;
+    private ArrayList<QARecord> qAArr =null;
+    private AuxLogic auxLogic=new AuxLogic();
     public boolean isBotInitialized=false;
 
     /* основа программы, отвечает за логику бота */
@@ -19,59 +18,8 @@ public class Logic{
      * Инициализирует бота
      */
     public void initBot(){
-        QAArr=new ArrayList<>();
-        FSO=new FileSysObj();
-        FSO.openFile("QADB.txt");
-        String line=FSO.readLine();
-        boolean LLiQflag=true;
-        QARecord qrrRec=null;
-        while(line!=null){
-            if(line.charAt(0)=='%') {
-                qrrRec=new QARecord();
-                qrrRec.sect=line.substring(1, line.length());
-                LLiQflag=true;
-                QAArr.add(qrrRec);
-            }
-            else if(line.charAt(0)=='?') {
-                LLiQflag=true;
-                qrrRec.qArr.add(line.substring(1, line.length()));
-            }
-            else if(line.charAt(0)=='*') {
-                if(LLiQflag) {
-                    qrrRec.aArr.add(line.substring(1, line.length()));
-                    LLiQflag=false;
-                }else{
-                    qrrRec.aArr.set(qrrRec.aArr.size()-1,qrrRec.aArr.get(qrrRec.aArr.size()-1)+"\n"+line.substring(1, line.length()));
-                }
-            }
-            line=FSO.readLine();
-        }
+        qAArr = auxLogic.parseFile();
         isBotInitialized=true;
-    }
-    /**
-     * Конвертор string в double
-     *
-     * @param msg сообщение пользователя
-     */
-    private double parseArg(String msg) {
-        if (msg==null)
-            return nan;
-        int frac = 0;
-        double arg = 0;
-        for (int i = 0; i < msg.length(); i++) {
-            if (msg.charAt(i) == '.' || msg.charAt(i) == ',')
-                frac = 1;
-            else if (msg.charAt(i) >= '0' && msg.charAt(i) <= '9') {
-                if (frac == 0)
-                    arg = arg * 10 + msg.charAt(i) - '0';
-                else {
-                    arg += (msg.charAt(i) - '0') * Math.pow(10, -frac);
-                    frac++;
-                }
-            } else
-                return nan;
-        }
-        return arg;
     }
 
     /**
@@ -117,8 +65,8 @@ public class Logic{
             uvars.wmode = 1;
             uvars.rmode = 1;
             answer="На данный момент доступны разделы:\n"; //до списка разделов
-            for(int i=0;i<QAArr.size();i++)
-                answer+=Integer.toString(i+1)+")"+QAArr.get(i).sect+"\n"; //список разделов
+            for(int i = 0; i< qAArr.size(); i++)
+                answer+=Integer.toString(i+1)+")"+ qAArr.get(i).sect+"\n"; //список разделов
             answer+="Выберите цифру раздела по которому возник вопрос."; //после списка разделов
         }
         /* команда для возвращения */
@@ -150,19 +98,19 @@ public class Logic{
         else{
             switch (uvars.rmode) {
                 case 1:
-                    uvars.arg1 = parseArg(msg);
-                    if (uvars.arg1 == nan)
+                    uvars.arg1 = auxLogic.parseArg(msg);
+                    if (uvars.arg1 == auxLogic.nan)
                         return "неизвестные символы";
                     switch (uvars.wmode) {
                         case 1:
-                            if ((int) uvars.arg1 > QAArr.size() || (int) uvars.arg1 <= 0) {
+                            if ((int) uvars.arg1 > qAArr.size() || (int) uvars.arg1 <= 0) {
                                 answer = "Такой цифры нет в данном меню." +
                                         " Пожалуйста, напишите одну из доступных цифр.\n"; //текст если число вне диапазона
                             } else {
                                 answer = "В этом разделе доступны следующие вопросы:\n"; //текст до списка вопросов
-                                for (int i = 0; i < QAArr.get((int)uvars.arg1 - 1).qArr.size(); i++)
+                                for (int i = 0; i < qAArr.get((int)uvars.arg1 - 1).qArr.size(); i++)
                                     answer += Integer.toString(i + 1) +
-                                            ")" + QAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n"; //список вопросов
+                                            ")" + qAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n"; //список вопросов
                                 answer += "Выберите цифру темы, на которую хотите получить" +
                                         " ответ или вернитесь обратно с помощью /return"; //текст после списка вопросов
                                 uvars.rmode = 2;
@@ -181,23 +129,23 @@ public class Logic{
                     }
                     break;
                 case 2:
-                    uvars.arg2 = parseArg(msg);
-                    if (uvars.arg2 == nan)
+                    uvars.arg2 = auxLogic.parseArg(msg);
+                    if (uvars.arg2 == auxLogic.nan)
                         return "неизвестные символы";
                     switch (uvars.wmode) {
                         case 1:
                             uvars.arg2 = Integer.parseInt(msg);
-                            if ((int) uvars.arg2 > QAArr.get((int) uvars.arg1 - 1).aArr.size() || (int) uvars.arg2 < 0) {
+                            if ((int) uvars.arg2 > qAArr.get((int) uvars.arg1 - 1).aArr.size() || (int) uvars.arg2 < 0) {
                                 answer = "Такой цифры нет в данном меню. Пожалуйста, напишите одну из доступных цифр.\n"; //число вне диапазона
                             } else if ((int) uvars.arg2 == 0) {
                                 answer = "На данный момент доступны разделы:\n"; //до списка разделов
-                                for (int i = 0; i < QAArr.size(); i++)
-                                    answer += Integer.toString(i + 1) + ")" + QAArr.get(i).sect + "\n"; //список разделов
+                                for (int i = 0; i < qAArr.size(); i++)
+                                    answer += Integer.toString(i + 1) + ")" + qAArr.get(i).sect + "\n"; //список разделов
                                 answer += "Выберите цифру раздела по которому возник вопрос."; //после списка разделов
                                 uvars.rmode = 1;
                             } else {
                                 answer = "По данной теме есть следующие ссылки:\n"; //до списка ответов
-                                answer += QAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1) + "\n"; //список ответов
+                                answer += qAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1) + "\n"; //список ответов
                                 answer += "Напишите 0, если хотите вернуться к выбору раздела или выберите один из" +
                                         " вопросов текущего раздела."; //после списка ответов
                             }
@@ -216,8 +164,8 @@ public class Logic{
                     break;
                 /* подсчёты и вывод */
                 case 3:
-                    uvars.arg3 = parseArg(msg);
-                    if (uvars.arg3 == nan)
+                    uvars.arg3 = auxLogic.parseArg(msg);
+                    if (uvars.arg3 == auxLogic.nan)
                         return "неизвестные символы";
                     switch (uvars.wmode) {
                         case 2:
