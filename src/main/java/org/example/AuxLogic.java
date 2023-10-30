@@ -20,13 +20,13 @@ public class AuxLogic {
                 qAArr.add(qrrRec);
             } else if (line.charAt(0) == '?') {
                 LLiQflag = true;
-                qrrRec.qArr.add(line.substring(1, line.length()));
+                qrrRec.qAdd(line.substring(1, line.length()));
             } else if (line.charAt(0) == '*') {
                 if (LLiQflag) {
-                    qrrRec.aArr.add(line.substring(1, line.length()));
+                    qrrRec.aAdd(line.substring(1, line.length()));
                     LLiQflag = false;
                 } else {
-                    qrrRec.aArr.set(qrrRec.aArr.size() - 1, qrrRec.aArr.get(qrrRec.aArr.size() - 1) + "\n" + line.substring(1, line.length()));
+                    qrrRec.aSet(qrrRec.aSize() - 1, qrrRec.aGet(qrrRec.aSize() - 1) + "\n" + line.substring(1, line.length()));
                 }
             }
             line = fileReader.readLine();

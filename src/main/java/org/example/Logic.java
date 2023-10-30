@@ -101,9 +101,9 @@ public class Logic{
                                         " Пожалуйста, напишите одну из доступных цифр.\n"; //текст если число вне диапазона
                             } else {
                                 answer = "В этом разделе доступны следующие вопросы:\n"; //текст до списка вопросов
-                                for (int i = 0; i < qAArr.get((int)uvars.arg1 - 1).qArr.size(); i++)
+                                for (int i = 0; i < qAArr.get((int)uvars.arg1 - 1).qSize(); i++)
                                     answer += Integer.toString(i + 1) +
-                                            ")" + qAArr.get((int) uvars.arg1 - 1).qArr.get(i) + "\n"; //список вопросов
+                                            ")" + qAArr.get((int) uvars.arg1 - 1).qGet(i) + "\n"; //список вопросов
                                 answer += "Выберите цифру темы, на которую хотите получить" +
                                         " ответ или вернитесь обратно с помощью /return"; //текст после списка вопросов
                                 uvars.rmode = 2;
@@ -128,7 +128,7 @@ public class Logic{
                     switch (uvars.wmode) {
                         case 1:
                             uvars.arg2 = Integer.parseInt(msg);
-                            if ((int) uvars.arg2 > qAArr.get((int) uvars.arg1 - 1).aArr.size() || (int) uvars.arg2 < 0) {
+                            if ((int) uvars.arg2 > qAArr.get((int) uvars.arg1 - 1).aSize() || (int) uvars.arg2 < 0) {
                                 answer = "Такой цифры нет в данном меню. Пожалуйста, напишите одну из доступных цифр.\n"; //число вне диапазона
                             } else if ((int) uvars.arg2 == 0) {
                                 answer = "На данный момент доступны разделы:\n"; //до списка разделов
@@ -138,7 +138,7 @@ public class Logic{
                                 uvars.rmode = 1;
                             } else {
                                 answer = "По данной теме есть следующие ссылки:\n"; //до списка ответов
-                                answer += qAArr.get((int) uvars.arg1 - 1).aArr.get((int) uvars.arg2 - 1) + "\n"; //список ответов
+                                answer += qAArr.get((int) uvars.arg1 - 1).aGet((int) uvars.arg2 - 1) + "\n"; //список ответов
                                 answer += "Напишите 0, если хотите вернуться к выбору раздела или выберите один из" +
                                         " вопросов текущего раздела."; //после списка ответов
                             }
