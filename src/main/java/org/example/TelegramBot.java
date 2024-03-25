@@ -2,7 +2,13 @@ package org.example;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * класс, отвечающий за работу бота в телеграме
  */
@@ -32,6 +38,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     /** отправка сообщений */
     public void sendMsg(Long usid, String text){
         SendMessage msg = SendMessage.builder().chatId(usid.toString()).text(text).build();
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        row.add("/vopros");
+        row.add("/vklad");
+        row.add("/kredit");
+        keyboardRows.add(row);
+        keyboardMarkup.setKeyboard(keyboardRows);
+        msg.setReplyMarkup(keyboardMarkup);
         try {
             execute(msg);
         } catch(TelegramApiException err){

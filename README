@@ -54,3 +54,16 @@
    https://www.banki.ru/wikibank/dokumentyi_dlya_oformleniya_potrebitelskogo_kredita/
    https://www.sravni.ru/vklady/info/dokumenty-dlya-otkrytiya-vklada/
    Напишите 0, если хотите вернуться к выбору раздела или выберите один из вопросов текущего раздела.
+
+  деплой
+  1)подключиться по ssh к vds
+
+  2)sudo apt install default-jdk установка java
+
+  3)scp -r /mnt/c/Users/Admin/Desktop/tg-bot root@{ipv4}:~/jb перенос файлов проекта через scp
+
+  4)sudo apt install maven установка maven
+
+  5)билд проекта
+
+  запуск) BOT-TOKEN={token} root@v1271736:~/jb# ./apache-maven-3.8.6/bin/mvn exec:java -Dexec.mainClass="org.example.Main"
