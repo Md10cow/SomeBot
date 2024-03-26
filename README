@@ -66,4 +66,4 @@
 
   5)билд проекта
 
-  запуск) BOT-TOKEN={token} root@v1271736:~/jb# ./apache-maven-3.8.6/bin/mvn exec:java -Dexec.mainClass="org.example.Main"
+  запуск) BOT-TOKEN={token} root@ubuntu:~/jb# ./apache-maven-3.8.6/bin/mvn exec:java -Dexec.mainClass="org.example.Main"
