@@ -1,37 +1,37 @@
 package org.example;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class AuxLogic {
     public double nan=0x7ff8000000000000L;
-    private FileReaderClass fileReader;
-    public ArrayList<QARecord> parseFile() {
+    public ArrayList<QARecord> parseFile() throws IOException {
         ArrayList<QARecord> qAArr = new ArrayList<>();
-        fileReader = new FileReaderClass();
-        fileReader.openFile("QADB.txt");
-        String line = fileReader.readLine();
-        boolean LLiQflag = true;
-        QARecord qrrRec = null;
-        while (line != null) {
-            if (line.charAt(0) == '%') {
-                qrrRec = new QARecord();
-                qrrRec.sect = line.substring(1, line.length());
-                LLiQflag = true;
-                qAArr.add(qrrRec);
-            } else if (line.charAt(0) == '?') {
-                LLiQflag = true;
-                qrrRec.qAdd(line.substring(1, line.length()));
-            } else if (line.charAt(0) == '*') {
-                if (LLiQflag) {
-                    qrrRec.aAdd(line.substring(1, line.length()));
-                    LLiQflag = false;
-                } else {
-                    qrrRec.aSet(qrrRec.aSize() - 1, qrrRec.aGet(qrrRec.aSize() - 1) + "\n" + line.substring(1, line.length()));
+        final boolean[] LLiQflag = {true};
+        final QARecord[] qrrRec = {null};
+        Files.lines(Path.of("QADB.txt")).forEach(line -> {
+            if (line != null) {
+                if (line.charAt(0) == '%') {
+                    qrrRec[0] = new QARecord();
+                    qrrRec[0].sect = line.substring(1, line.length());
+                    LLiQflag[0] = true;
+                    qAArr.add(qrrRec[0]);
+                } else if (line.charAt(0) == '?') {
+                    LLiQflag[0] = true;
+                    qrrRec[0].qAdd(line.substring(1, line.length()));
+                } else if (line.charAt(0) == '*') {
+                    if (LLiQflag[0]) {
+                        qrrRec[0].aAdd(line.substring(1, line.length()));
+                        LLiQflag[0] = false;
+                    } else {
+                        qrrRec[0].aSet(qrrRec[0].aSize() - 1, qrrRec[0].aGet(qrrRec[0].aSize() - 1) + "\n" + line.substring(1, line.length()));
+                    }
                 }
             }
-            line = fileReader.readLine();
-        }
-        fileReader.close();
+        });
         return qAArr;
     }
 

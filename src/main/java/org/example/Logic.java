@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,11 @@ public class Logic{
      */
     public String parseMessage(String msg, Long usid) {
         if (!isBotInitialized) {
-            qAArr = auxLogic.parseFile();
+            try {
+                qAArr = auxLogic.parseFile();
+            }catch(IOException err) {
+                err.printStackTrace();
+            }
             isBotInitialized=true;
         }
         String answer;
